@@ -1,65 +1,17 @@
-# wx-miniapp-ide README
+一款帮助在 VSCode 里面开发微信小程序的插件。该插件主要实现以下功能：
+- [ ] 规则集操作
+  - [ ] 在 wxss 文件中选择一个css规则集然后点击右键选择 压缩规则集 选项，可以将css规则集压缩至一行。
+  - [ ] 在 wxss 文件中选择一个css规则集然后点击右键选择 展开规则集 选项，可以将css规则集展开并美化。
+  - [ ] 选中 wxss 文件所有内容，执行上述操作。
+  - [ ] 在命令面板中执行上述操作。
+- [ ] 生成小程序 Page 和 Component 相关文件。
+  - [ ] 在侧边资源管理器中点击右键选择创建相关文件。
+  - [ ] 可选生成文件的默认内容。
+  - [ ] 可选同时额外生成其他文件，如 less 文件。
+- [ ] js文件微信原生api只能提示
+  - [ ] 输入 wx. 提示相关api，过滤掉在编辑器中输入 wx 时的不相关提示。
 
-This is the README for your extension "wx-miniapp-ide". After writing up a brief description, we recommend including the following sections.
 
-## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
-
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+## 参考资料
+- VS Code 插件开发文档 <https://github.com/Liiked/VS-Code-Extension-Doc-ZH>
