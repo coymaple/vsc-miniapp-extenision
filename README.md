@@ -11,7 +11,8 @@
 - [ ] js文件微信原生api只能提示
   - [ ] 输入 wx. 提示相关api，过滤掉在编辑器中输入 wx 时的不相关提示。
 
-
+## 格式化 wxml 
+使用的场景是什么呢？
 
 ## 参考资料
 - VS Code 插件开发文档 <https://github.com/Liiked/VS-Code-Extension-Doc-ZH>

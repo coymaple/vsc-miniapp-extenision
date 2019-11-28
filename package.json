@@ -10,14 +10,54 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:extension.helloWorld"
+		"onCommand:extension.helloWorld",
+		"onCommand:extension.compressRuleSet",
+		"onCommand:extension.unfoldRuleSet"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
+		"keybindings": [
+			{
+				"command": "extension.compressRuleSet",
+				"key": "ctrl+k+r",
+				"mac": "cmd+f1",
+				"when": "editorTextFocus"
+			},
+			{
+				"command": "extension.unfoldRuleSet",
+				"key": "ctrl+k+r",
+				"mac": "cmd+f1",
+				"when": "editorTextFocus"
+			}
+		],
+		"menus": {
+			"editor/context": [
+				{
+					"when": "resourceExtname != .js",
+					"command": "extension.compressRuleSet",
+					"alt": "markdown.showPreviewToSide",
+					"group": "z_commands"
+				},
+				{
+					"when": "resourceExtname != .js",
+					"command": "extension.unfoldRuleSet",
+					"alt": "markdown.showPreviewToSide",
+					"group": "z_commands"
+				}
+			]
+		},
 		"commands": [
 			{
 				"command": "extension.helloWorld",
 				"title": "Hello World"
+			},
+			{
+				"command": "extension.compressRuleSet",
+				"title": "压缩规则集"
+			},
+			{
+				"command": "extension.unfoldRuleSet",
+				"title": "展开规则集"
 			}
 		]
 	},
@@ -35,8 +75,14 @@
 		"@types/vscode": "^1.40.0",
 		"glob": "^7.1.5",
 		"mocha": "^6.2.2",
-		"typescript": "^3.6.4",
 		"tslint": "^5.20.0",
+		"typescript": "^3.6.4",
 		"vscode-test": "^1.2.2"
+	},
+	"optionalDependencies": {
+		"prettier": "^1.19.1"
+	},
+	"dependencies": {
+		"read-pkg-up": "^7.0.0"
 	}
 }
