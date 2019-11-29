@@ -67,7 +67,8 @@
 			{
 				"command": "extension.unfoldRuleSet",
 				"when": "editorLangId == wxss"
-			},{
+			},
+			{
 				"command": "extension.formatwxml",
 				"when": "editorLangId == wxml"
 			}
