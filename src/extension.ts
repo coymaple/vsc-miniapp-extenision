@@ -1,25 +1,31 @@
 import * as vscode from 'vscode';
-function compressRuleSet() {
-	vscode.window.showInformationMessage('Compress RuleSet');
-}
-function unfoldRuleSet(){
-	vscode.window.showInformationMessage('Unfold RuleSet');
-}
+import { getRuleSetOperator } from './RuleSet';
+import WxmlFormatter from './WxmlFormatter';
+const wxmlFormatter = new WxmlFormatter();
+
 export function activate(context: vscode.ExtensionContext) {
-	let disposable = vscode.commands.registerCommand('extension.compressRuleSet', compressRuleSet);
-	vscode.commands.registerCommand('extension.unfoldRuleSet', unfoldRuleSet);
-	context.subscriptions.push(disposable);
-	context.subscriptions.push();
+
+	let disp = vscode.commands.registerCommand('extension.formatwxml', () => {
+		const { activeTextEditor } = vscode.window;
+
+		if (activeTextEditor) {
+			const { document } = activeTextEditor;
+			console.log(document);
+			const edit = new vscode.WorkspaceEdit();
+			// edit.insert(document.uri, firstLine.range.start, '42\n');
+
+			return vscode.workspace.applyEdit(edit);
+
+		}
+	});
+	context.subscriptions.push(disp);
+
+	let ruleSetOperator = getRuleSetOperator();
+	for (let [key, value] of ruleSetOperator) {
+		let disposable = vscode.commands.registerCommand(key, value);
+		context.subscriptions.push(disposable);
+	}
+
+	vscode.languages.registerDocumentFormattingEditProvider({ scheme: 'file', language: 'wxml' }, wxmlFormatter);
 }
 
-// ,
-// 			"commandPalette": [
-// 				{
-// 					"command": "extension.compressRule",
-// 					"when": "editorLangId == wxss"
-// 				},
-// 				{
-// 					"command": "extension.unfoldRuleSet",
-// 					"when": "editorLangId == wxss"
-// 				}
-// 			]

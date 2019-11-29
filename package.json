@@ -12,21 +12,16 @@
 	"activationEvents": [
 		"onCommand:extension.helloWorld",
 		"onCommand:extension.compressRuleSet",
-		"onCommand:extension.unfoldRuleSet"
+		"onCommand:extension.unfoldRuleSet",
+		"onCommand:extension.formatwxml"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"keybindings": [
 			{
-				"command": "extension.compressRuleSet",
-				"key": "ctrl+k+r",
-				"mac": "cmd+f1",
-				"when": "editorTextFocus"
-			},
-			{
-				"command": "extension.unfoldRuleSet",
-				"key": "ctrl+k+r",
-				"mac": "cmd+f1",
+				"command": "extension.formatwxml",
+				"key": "alt+shift+f",
+				"mac": "alt+shift+f",
 				"when": "editorTextFocus"
 			}
 		],
@@ -58,6 +53,23 @@
 			{
 				"command": "extension.unfoldRuleSet",
 				"title": "展开规则集"
+			},
+			{
+				"command": "extension.formatwxml",
+				"title": "格式化wxml文件"
+			}
+		],
+		"commandPalette": [
+			{
+				"command": "extension.compressRule",
+				"when": "editorLangId == wxss"
+			},
+			{
+				"command": "extension.unfoldRuleSet",
+				"when": "editorLangId == wxss"
+			},{
+				"command": "extension.formatwxml",
+				"when": "editorLangId == wxml"
 			}
 		]
 	},
