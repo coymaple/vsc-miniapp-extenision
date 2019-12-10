@@ -12,9 +12,31 @@
   - [ ] 输入 wx. 提示相关api，过滤掉在编辑器中输入 wx 时的不相关提示。
 - [ ] 格式化文件
   - [ ] 格式化 wxml 文件
+- [ ] 监听 app.json 文件的改动，这个文件保存时解析里面的配置。
+  - [ ] 可选开启路由映射，将小程序的路由方法的参数替换路由的名字。
 
 ## 格式化 wxml 
 使用的场景是什么呢？
+
+## 压缩规则集
+将一个规则集压缩到一条，用空格进行分隔。
+多个空行合并成一行
+删掉注释下面的空行，为注释上面添加空行。
+
+## app.json 智能提示
+
+小程序全局配置里面用来定义底部tabbar的片段。
+```json
+  "tabbar": {
+    "color": "",
+    "selectColor": "",
+    "list": [
+      {"pagePath": "","text": "","iconPath": "","selectedIconPath": ""}
+    ]
+  }
+```
+
+在app.json 文件内编写配置的时候，在 tabbar 的 "{}" 里面，输入字母 c ，候选 color ,按下回车键在当前位置填充 color 。
 
 ## 参考资料
 - VS Code 插件开发文档 <https://github.com/Liiked/VS-Code-Extension-Doc-ZH>
