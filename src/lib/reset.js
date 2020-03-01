@@ -5,15 +5,6 @@ let str = `.navigation {
   box-sizing: border-box;
   background-color: #eef1f6;
 }
-.navigation .main-item {
-  padding-left: 20px;
-  height: 56px;
-  line-height: 56px;
-  color: #48576a;
-  font-size: 16px;
-  cursor: pointer;
-  position: relative;
-}
 .navigation .icon-arrow {
   position: absolute;
   top: 0px;
@@ -23,42 +14,6 @@ let str = `.navigation {
 /* .navigation .main-item-down-arrow::before {
   content: "\E600";
 } */
-.navigation .sub-container {
-  display: flex;
-  flex-direction: column;
-  height: 150px;
-  overflow: hidden;
-}
-.navigation .sub-item {
-  width: 100%;
-  height: 50px;
-  line-height: 50px;
-  color: #48576a;
-  background-color: #e4e8f1;
-  padding-left: 40px;
-  box-sizing: border-box;
-}
-.navigation .sub-item:hover {
-  background-color: #d1dbe5;
-}
-
-.clicked-item{
-  background-color: #d1dbe5 !important;
-}
-
-.navigation .selected-item{
-  background-color: #d1dbe5;
-}
-
-.sub-show{
-  display: block;
-  animation: slowly-show 2s;
-}
-
-.sub-hide{
-  display: none !important;
-  animation: slowly-hide 2s;
-}
 
 /*子菜单慢慢消失的动画*/
 @keyframes slowly-hide {
@@ -94,57 +49,65 @@ let moreRuleSet = `.arrow-left{
   transform: rotate(180deg);
 }`
 
-let str = '.arrow-left{   transform: rotate(-90deg); } .arrow-down{   transform: rotate(180deg); }'
-// 检测是否是单个规则集或多个规则集
-// 检测字符串里面包含一个字符集还是多个字符集
-function judgeRuleSet() {
-  let regExp = new RegExp('(?<ruleset>.*\{.*\})\1*', 'mgs')
-  let regExp = /(?<ruleset>.*\{(.*:.*;)?\2*\})\1*/
-}
+let str = `div{
+  /*宽度100个像素*/
+  width:100px;
+}`
 
-// 正则表达式问题
-
-// 使用正则表达式取得字符串 '123aaaabbbbbbcc' 中的 'aaaa' 'bbbbbb' 'cc'
-
-// 方法一：匹配到内容之后就把内容给提取出来，然后继续进行匹配。
-// 方法二：对重复内容以某种方式进行分隔。
-function processRoleSet(str) {
-  // let regExp = /(?<selector>[#\.]?[\w-]+)\s*\{(?<rule>\s*[\w-]*\s*:\s*[\w()-]*\s*;\s*)\}/
-  let ruleRegex = /(?<selector>[#\.]?[\w-]+)\s*\{(?<rule>.*)\}/ms
-  let captured = str.match(ruleRegex)  // 捕获组对象，如果没有捕获任何内容返回null
-  
-  let { selector, rule } = captured.groups
-  let ruleStr = ''  // 规则组成的字符串
-  // 字符串中存在符合指定模式的子字符串
-  if (selector && rule.trim()) {
-    ruleStr = processRuleStringBySplit(rule)
-    return `${selector} {${ruleStr}}`
+// 压缩单个规则集
+// example "div{height:200px;}" => "div { height: 200px; }"
+function compressRuleset(str) {
+  if (countChar('}', str) > 0) {  // 有多个css规则集
+    let temp = ''
+    str.replace(/\}/g, '$&/* split marker */').split('/* split marker */').forEach(ele => {
+      // ToDO 规则集外面的注释处理
+      // ToDo 有 "{" "}" 嵌套的规则集处理
+      temp += compressSingleRuleset(ele)
+      temp += '\n'
+    })
+    return temp
+  } else {
+    return compressSingleRuleset(str)
   }
 }
 
-// 切割字符串法处理规则（样式）字符串
-function processRuleStringBySplit(str){
-  let ruleStr = ''
-  let rules = {} // css规则对象，键为规则名（属性），属性值为规则值，都是字符串类型。
-  str.split(';').forEach(ele => {
-    if (ele.trim()) {
-      let temp = ele.split(':')
-      rules[temp[0].trim()] = temp[1].trim()
-    }
-  })
-  for (k in rules) {
-    ruleStr += ` ${k}: ${rules[k]};`
-  }
-  ruleStr += ' '
-  return ruleStr
+function compressSingleRuleset(str) {
+  return str
+    .replace(/\s/g, ' ')           // 空白字符替换成空格
+    .replace(/ +/g, ' ')           // 多个空格合并成一个空格
+
+    .replace(/[^ ](?=\{)/g, '$& ')    // "{" 左面没有空格
+    .replace(/\{(?=[^ ])/g, '$& ')   // "{" 右面没有空格
+    .replace(/ (?=:)/g, '')        // ":" 左面有空格
+    .replace(/:(?=[^ ])/g, '$& ')    // ":" 右面没有空格
+    .replace(/ (?=;)/g, '$& ')     // ";" 左面有空格
+    .replace(/;(?=[^ ])/g, '$& ')    // ";" 右面没有空格
+
+    .replace(/(?<! )\/\*/, ' $&')  // '/*' 左面没有空格（非空格）
+    .replace(/\/\*(?! )/, '$& ')   // '/*' 右面没有空格（非空格）
+    .replace(/(?<! )\*\//, ' $&')  // '/*' 左面没有空格（非空格）
+    .replace(/\*\/(?! )/, '$& ')   // '/*' 右面没有空格（非空格）
 }
 
-// 频繁捕获法处理规规则（样式）字符串
-function processRuleStringByMoreCapture(str){
-  let flag = true  // 循环控制变量
-  let regExp = /(?<rule>\s*(?<key>[\w-]*)\s*:\s*(?<value>[\w()-]*)\s*;\s*)|(?<comment>\\\*.*\\\*)/
-  // let regExp = /(?<rule>\s*(?<key>[\w-]*)\s*:\s*(?<value>[\w()-]*)\s*;\s*)/
-  while(flag){
+// 展开规则集
+function unfoldRuleset(str) {
+  return str
+    .replace(/\{(?!\n)/g, '$&\n\t')     // '{' 的右面插入回车（'\n'）
+    .replace(/\*\/(?!\n)/g, '$&\n\t')   // '*/' 的右面插入回车（'\n'）
+    .replace(/;(?!\n)/g, '$&\n\t')      // ';' 的右面插入回车（'\n'）
+    .replace(/\}(?!\n)/g, '$&\n')       // '}' 的右面插入回车（'\n'）
+    .replace(/\s*\}$/g, '\n}')          // 将'    }' 变成 '}' 
+}
 
-  }
+/**
+ * 使用正则表达式统计字符 character 在 str 中出现的次数
+ * @param {string} character 目标字符
+ * @param {string} str 统计的范围
+ */
+function countChar(character, str) {
+  // ToDO character 和 str 的异常（空字符）处理
+  // ToDO 构造用于适用 RegExp 构造函数的转义字符串
+  // str.replace(/[\\\$\(\)\*+.\[\]?\^\{\}\|]/g,'//$&')
+  const pattern = new RegExp(character, 'g')
+  return str.match(pattern).length
 }
