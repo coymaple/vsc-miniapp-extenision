@@ -12,7 +12,11 @@ function unfoldRuleSet() {
 // 导出命令对象
 export function getRuleSetOperator() {
   let operator = new Map();
-  operator.set('extension.compressRuleSet',compressRuleSet);
-  operator.set('extension.unfoldRuleSet',unfoldRuleSet);
+  operator.set('extension.compressRuleSet', compressRuleSet);
+  operator.set('extension.unfoldRuleSet', unfoldRuleSet);
   return operator;
 }
+
+
+
+

@@ -6,6 +6,7 @@ let str = `.navigation {
   background-color: #eef1f6;
 }
 .navigation .icon-arrow {
+  /* 使用绝对定位 */
   position: absolute;
   top: 0px;
   right: 20px;
@@ -49,17 +50,25 @@ let moreRuleSet = `.arrow-left{
   transform: rotate(180deg);
 }`
 
-let str = `div{
+let str1 = `div{
   /*宽度100个像素*/
   width:100px;
 }`
 
-// 压缩单个规则集
+// 压缩规则集
+// 识别多个规则集还是一个规则集
 // example "div{height:200px;}" => "div { height: 200px; }"
 function compressRuleset(str) {
-  if (countChar('}', str) > 0) {  // 有多个css规则集
+  const SPLIT_MARKER = '/* split marker */';
+  if (charCounter('}', str) > 0) {  // 有多个css规则集
     let temp = ''
-    str.replace(/\}/g, '$&/* split marker */').split('/* split marker */').forEach(ele => {
+    // 以 '}' 作为一个规则集的标识，在其右面断开
+    let materials = str.replace(/(?<=\}\s*)\/\*[\s\S]*?\*\//mg, `$&${SPLIT_MARKER}`)  // 处理整个规则集被注释后的情况，在注释的结束插入拆分标记
+      .replace(new RegExp('(?<=' + escapeMetaCharacter(SPLIT_MARKER) + '\\s*)\\/\\*.*?\\*\\/', 'mg'), `$&${SPLIT_MARKER}`)   // 处理规则集外面的注释内容
+      .replace(/\}(?!\s*\*\/)/g, `$&${SPLIT_MARKER}`)    // 在规则集的末尾（'}'后面）插入拆分标记
+      .split(SPLIT_MARKER)  // 根据 拆分标记 将字符串拆分成数组
+
+    materials.forEach(ele => {
       // ToDO 规则集外面的注释处理
       // ToDo 有 "{" "}" 嵌套的规则集处理
       temp += compressSingleRuleset(ele)
@@ -71,6 +80,7 @@ function compressRuleset(str) {
   }
 }
 
+// 压缩单个规则集
 function compressSingleRuleset(str) {
   return str
     .replace(/\s/g, ' ')           // 空白字符替换成空格
@@ -96,7 +106,7 @@ function unfoldRuleset(str) {
     .replace(/\*\/(?!\n)/g, '$&\n\t')   // '*/' 的右面插入回车（'\n'）
     .replace(/;(?!\n)/g, '$&\n\t')      // ';' 的右面插入回车（'\n'）
     .replace(/\}(?!\n)/g, '$&\n')       // '}' 的右面插入回车（'\n'）
-    .replace(/\s*\}$/g, '\n}')          // 将'    }' 变成 '}' 
+    .replace(/\s*\}$/gm, '\n}')          // 将'    }' 变成 '}' 
 }
 
 /**
@@ -104,10 +114,26 @@ function unfoldRuleset(str) {
  * @param {string} character 目标字符
  * @param {string} str 统计的范围
  */
-function countChar(character, str) {
+function charCounter(character, str) {
   // ToDO character 和 str 的异常（空字符）处理
   // ToDO 构造用于适用 RegExp 构造函数的转义字符串
   // str.replace(/[\\\$\(\)\*+.\[\]?\^\{\}\|]/g,'//$&')
   const pattern = new RegExp(character, 'g')
   return str.match(pattern).length
 }
+
+// 转义字符串中的正则表达式元字符
+function escapeMetaCharacter(str) {
+  return str.replace(/[*/]/g, '\\$&')
+}
+
+console.log(unfoldRuleset(compressRuleset(str)))
+
+/*子菜单慢慢消失的动画*/
+// @keyframes slowly - hide {
+//   from{ height: 150px; }
+//   to{ height: 0; display: none!important; }
+// }
+
+// pattern = new RegExp('(?<=' + escapeMetaCharacter(SPLIT_MARKER) + '\\s*)\\/\\*.*?\\*\\/', 'mg')
+// '/(?<=' + escapeMetaCharacter(SPLIT_MARKER) +'\\s*?)(\/\*[\s\S]*?\*\/)/mg'
